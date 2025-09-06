@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IA - Reconnaissance de Dessin</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ml5/0.12.2/ml5.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>🎨 Dessine et laisse l’IA deviner !</h1>
+    <canvas id="canvas" width="280" height="280"></canvas>
+    <div class="buttons">
+      <button id="predictBtn">Deviner</button>
+      <button id="clearBtn">Effacer</button>
+    </div>
+    <div id="result">👉 Dessine quelque chose...</div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
