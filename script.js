@@ -4,7 +4,7 @@ let drawing = false;
 
 function preloadModel() {
   doodleNet = ml5.imageClassifier('DoodleNet', () => {
-    console.log("✅ Modèle DoodleNet chargé !");
+    console.log("Modèle DoodleNet chargé !");
   });
 }
 
@@ -12,65 +12,66 @@ function setupCanvas() {
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
 
+  // fond blanc
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  canvas.addEventListener("mousedown", startDrawing);
-  canvas.addEventListener("mouseup", stopDrawing);
-  canvas.addEventListener("mousemove", draw);
+  // événements souris
+  canvas.addEventListener("mousedown", (e) => {
+    drawing = true;
+    ctx.beginPath();
+    ctx.moveTo(e.offsetX, e.offsetY);
+  });
 
-  canvas.addEventListener("touchstart", startDrawing);
-  canvas.addEventListener("touchend", stopDrawing);
-  canvas.addEventListener("touchmove", drawTouch);
-}
+  canvas.addEventListener("mouseup", () => {
+    drawing = false;
+  });
 
-function startDrawing(e) {
-  drawing = true;
-  ctx.beginPath();
-  ctx.moveTo(getX(e), getY(e));
-}
+  canvas.addEventListener("mousemove", (e) => {
+    if (!drawing) return;
+    ctx.lineWidth = 10;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "black";
+    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.stroke();
+  });
 
-function stopDrawing() {
-  drawing = false;
-}
+  // événements tactiles (mobile)
+  canvas.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    drawing = true;
+    ctx.beginPath();
+    ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
+  });
 
-function draw(e) {
-  if (!drawing) return;
-  ctx.lineWidth = 10;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "black";
-  ctx.lineTo(getX(e), getY(e));
-  ctx.stroke();
-}
+  canvas.addEventListener("touchend", () => {
+    drawing = false;
+  });
 
-function drawTouch(e) {
-  e.preventDefault();
-  if (!drawing) return;
-  let touch = e.touches[0];
-  ctx.lineWidth = 10;
-  ctx.lineCap = "round";
-  ctx.strokeStyle = "black";
-  ctx.lineTo(touch.clientX - canvas.offsetLeft, touch.clientY - canvas.offsetTop);
-  ctx.stroke();
-}
-
-function getX(e) {
-  return e.clientX - canvas.offsetLeft;
-}
-
-function getY(e) {
-  return e.clientY - canvas.offsetTop;
+  canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    if (!drawing) return;
+    const touch = e.touches[0];
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineWidth = 10;
+    ctx.lineCap = "round";
+    ctx.strokeStyle = "black";
+    ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+    ctx.stroke();
+  });
 }
 
 function predictDrawing() {
   doodleNet.classify(canvas, (err, results) => {
     if (err) {
       console.error(err);
-      document.getElementById("result").innerText = "⚠️ Erreur d'analyse.";
+      document.getElementById("result").innerText = "Erreur d'analyse.";
       return;
     }
     document.getElementById("result").innerHTML =
-      `🤔 Je pense que tu as dessiné : <b>${results[0].label}</b> 
+      `Je pense que tu as dessiné : <b>${results[0].label}</b> 
        (confiance ${(results[0].confidence * 100).toFixed(1)}%)`;
   });
 }
@@ -78,7 +79,7 @@ function predictDrawing() {
 function clearCanvas() {
   ctx.fillStyle = "white";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
-  document.getElementById("result").innerText = "👉 Dessine quelque chose...";
+  document.getElementById("result").innerText = "Dessine quelque chose...";
 }
 
 document.getElementById("predictBtn").addEventListener("click", predictDrawing);
