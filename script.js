@@ -69,17 +69,21 @@ function predictDrawing() {
     return;
   }
   const canvasEl = document.getElementById("canvas");
-  doodleNet.classify(canvasEl, (err, results) => {
-    if (err) {
-      console.error(err);
-      document.getElementById("result").innerText = "erreur d'analyse";
-      return;
-    }
-    console.log(results);
-    document.getElementById("result").innerHTML =
-      `Je pense que tu as dessiné : <b>${results[0].label}</b> 
-       (confiance ${(results[0].confidence * 100).toFixed(1)}%)`;
-  });
+  const img = new Image();
+  img.src = canvasEl.toDataURL("image/png");
+  img.onload = () => {
+    doodleNet.classify(img, (err, results) => {
+      if (err) {
+        console.error(err);
+        document.getElementById("result").innerText = "erreur d'analyse";
+        return;
+      }
+      console.log("Résultats :", results);
+      document.getElementById("result").innerHTML =
+        `Je pense que tu as dessiné : <b>${results[0].label}</b> 
+         (confiance ${(results[0].confidence * 100).toFixed(1)}%)`;
+    });
+  };
 }
 
 function clearCanvas() {
