@@ -68,12 +68,14 @@ function predictDrawing() {
     document.getElementById("result").innerText = "modele en cours de chargement";
     return;
   }
-  doodleNet.classify(canvas, (err, results) => {
+  const canvasEl = document.getElementById("canvas");
+  doodleNet.classify(canvasEl, (err, results) => {
     if (err) {
       console.error(err);
       document.getElementById("result").innerText = "erreur d'analyse";
       return;
     }
+    console.log(results);
     document.getElementById("result").innerHTML =
       `Je pense que tu as dessiné : <b>${results[0].label}</b> 
        (confiance ${(results[0].confidence * 100).toFixed(1)}%)`;
