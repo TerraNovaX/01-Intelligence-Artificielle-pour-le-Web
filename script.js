@@ -2,6 +2,7 @@
 let canvas, ctx;
 let drawing = false;
 let model; 
+import * as labels from './labels.js';
 
 async function preloadModel() {
   try {
@@ -84,8 +85,8 @@ async function predictDrawing() {
   const confidence = predictions[classId] * 100;
 
   document.getElementById("result").innerHTML =
-    `Je pense que tu as dessiné : <b>${classId}</b> (confiance ${confidence.toFixed(1)}%)`;
-  
+    `Je pense que tu as dessiné : <b>${labels[classId]}</b> (confiance ${confidence.toFixed(1)}%)`;
+
 }
 
 function clearCanvas() {
