@@ -64,25 +64,20 @@ function setupCanvas() {
 }
 function predictDrawing() {
   if (!modelready) {
-    document.getElementById("result").innerText = "Modèle en cours de chargement...";
+    document.getElementById("result").innerText = "modèle en cours de chargement...";
     return;
   }
-  const canvasEl = document.getElementById("canvas");
-  const img = new Image();
-  img.src = canvasEl.toDataURL("image/png");
-  img.onload = () => {
-    doodleNet.classify(img, (err, results) => {
-      if (err) {
-        console.error(err);
-        document.getElementById("result").innerText = "erreur d'analyse";
-        return;
-      }
-      console.log("Résultats :", results);
-      document.getElementById("result").innerHTML =
-        `Je pense que tu as dessiné : <b>${results[0].label}</b> 
-         (confiance ${(results[0].confidence * 100).toFixed(1)}%)`;
-    });
-  };
+  doodleNet.classify((err, results) => {
+    if (err) {
+      console.error(err);
+      document.getElementById("result").innerText = "erreur d'analyse";
+      return;
+    }
+    console.log("Résultats :", results);
+    document.getElementById("result").innerHTML =
+      `Je pense que tu as dessiné : <b>${results[0].label}</b> 
+       (confiance ${(results[0].confidence * 100).toFixed(1)}%)`;
+  });
 }
 
 function clearCanvas() {
