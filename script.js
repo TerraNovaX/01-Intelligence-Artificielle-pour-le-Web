@@ -20,7 +20,7 @@ function setupCanvas() {
   canvas = document.getElementById("canvas");
   ctx = canvas.getContext("2d");
 
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   canvas.addEventListener("mousedown", (e) => {
@@ -33,9 +33,9 @@ function setupCanvas() {
 
   canvas.addEventListener("mousemove", (e) => {
     if (!drawing) return;
-    ctx.lineWidth = 10;
+    ctx.lineWidth = 12;
     ctx.lineCap = "round";
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = "white";
     ctx.lineTo(e.offsetX, e.offsetY);
     ctx.stroke();
   });
@@ -56,9 +56,9 @@ function setupCanvas() {
     if (!drawing) return;
     const touch = e.touches[0];
     const rect = canvas.getBoundingClientRect();
-    ctx.lineWidth = 10;
+    ctx.lineWidth = 12;
     ctx.lineCap = "round";
-    ctx.strokeStyle = "black";
+    ctx.strokeStyle = "white";
     ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
     ctx.stroke();
   });
@@ -91,7 +91,7 @@ async function predictDrawing() {
 }
 
 function clearCanvas() {
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "black";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   document.getElementById("result").innerText = "Dessine quelque chose...";
 }
