@@ -1,12 +1,12 @@
 let doodleNet;
-let modelready = false;
+let modelReady = false;
 let canvas, ctx;
 let drawing = false;
 
 function preloadModel() {
   doodleNet = ml5.imageClassifier('DoodleNet', () => {
-    console.log("Modèle DoodleNet chargé !");
-    modelready = true;
+    console.log("modèle DoodleNet chargé !");
+    modelReady = true;
     document.getElementById("result").innerText = "Modèle prêt ! Dessine quelque chose...";
   });
 }
@@ -24,9 +24,7 @@ function setupCanvas() {
     ctx.moveTo(e.offsetX, e.offsetY);
   });
 
-  canvas.addEventListener("mouseup", () => {
-    drawing = false;
-  });
+  canvas.addEventListener("mouseup", () => drawing = false);
 
   canvas.addEventListener("mousemove", (e) => {
     if (!drawing) return;
@@ -46,9 +44,7 @@ function setupCanvas() {
     ctx.moveTo(touch.clientX - rect.left, touch.clientY - rect.top);
   });
 
-  canvas.addEventListener("touchend", () => {
-    drawing = false;
-  });
+  canvas.addEventListener("touchend", () => drawing = false);
 
   canvas.addEventListener("touchmove", (e) => {
     e.preventDefault();
@@ -62,8 +58,9 @@ function setupCanvas() {
     ctx.stroke();
   });
 }
+
 function predictDrawing() {
-  if (!modelready) {
+  if (!modelReady) {
     document.getElementById("result").innerText = "modèle en cours de chargement...";
     return;
   }
@@ -72,13 +69,12 @@ function predictDrawing() {
   smallCanvas.width = 28;
   smallCanvas.height = 28;
   const smallCtx = smallCanvas.getContext("2d");
-
   smallCtx.drawImage(canvas, 0, 0, 28, 28);
 
   doodleNet.classify(smallCanvas, (err, results) => {
     if (err) {
       console.error(err);
-      document.getElementById("result").innerText = "erreur d'analyse.";
+      document.getElementById("result").innerText = "erreur d'analyse";
       return;
     }
     console.log("Résultats :", results);
@@ -87,7 +83,6 @@ function predictDrawing() {
        (confiance ${(results[0].confidence * 100).toFixed(1)}%)`;
   });
 }
-
 
 function clearCanvas() {
   ctx.fillStyle = "white";
