@@ -62,10 +62,9 @@ function setupCanvas() {
     ctx.stroke();
   });
 }
-
 function predictDrawing() {
   if (!modelready) {
-    document.getElementById("result").innerText = "modele en cours de chargement";
+    document.getElementById("result").innerText = "Modèle en cours de chargement...";
     return;
   }
   const canvasEl = document.getElementById("canvas");
