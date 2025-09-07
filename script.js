@@ -1,14 +1,12 @@
-let doodleNet;
-let modelReady = false;
+
 let canvas, ctx;
 let drawing = false;
+let model; 
 
-function preloadModel() {
-  doodleNet = ml5.imageClassifier('DoodleNet', () => {
-    console.log("modèle DoodleNet chargé !");
-    modelReady = true;
-    document.getElementById("result").innerText = "Modèle prêt ! Dessine quelque chose...";
-  });
+async function preloadModel() {
+  const model = await tf.loadLayersModel('model/model.json');
+  console.log("Modèle chargé !");
+  document.getElementById("result").innerText = "Modèle prêt ! Dessine quelque chose...";
 }
 
 function setupCanvas() {
@@ -59,8 +57,8 @@ function setupCanvas() {
   });
 }
 
-function predictDrawing() {
-  if (!modelReady) {
+async function predictDrawing() {
+  if (!model) {
     document.getElementById("result").innerText = "modèle en cours de chargement...";
     return;
   }
@@ -71,17 +69,18 @@ function predictDrawing() {
   const smallCtx = smallCanvas.getContext("2d");
   smallCtx.drawImage(canvas, 0, 0, 28, 28);
 
-  doodleNet.classify(smallCanvas, (err, results) => {
-    if (err) {
-      console.error(err);
-      document.getElementById("result").innerText = "erreur d'analyse";
-      return;
-    }
-    console.log("Résultats :", results);
-    document.getElementById("result").innerHTML =
-      `Je pense que tu as dessiné : <b>${results[0].label}</b>
-       (confiance ${(results[0].confidence * 100).toFixed(1)}%)`;
-  });
+  let image = tf.browser.fromPixels(smallCanvas);
+  image = image.mean(2).toFloat();
+  image = image.div(tf.scalar(255));
+  image = image.expandDims(0).expandDims(-1);
+
+  const predictions = await model.predict(image).data();
+  const classId = predictions.indexOf(Math.max(...predictions));
+  const confidence = predictions[classId] * 100;
+
+  document.getElementById("result").innerHTML =
+    `Je pense que tu as dessiné : <b>${classId}</b> (confiance ${confidence.toFixed(1)}%)`;
+  
 }
 
 function clearCanvas() {
