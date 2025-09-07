@@ -5,7 +5,7 @@ let model;
 
 async function preloadModel() {
   try {
-    model = await tf.loadLayersModel('model/model.json');
+    model = await tf.loadLayersModel('./model/model.json');
     console.log("Modèle chargé !");
     document.getElementById("result").innerText = "Modèle prêt ! Dessine quelque chose...";
   } catch (error) {
