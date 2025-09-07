@@ -4,9 +4,14 @@ let drawing = false;
 let model; 
 
 async function preloadModel() {
-  const model = await tf.loadLayersModel('model/model.json');
-  console.log("Modèle chargé !");
-  document.getElementById("result").innerText = "Modèle prêt ! Dessine quelque chose...";
+  try {
+    model = await tf.loadLayersModel('model/model.json');
+    console.log("Modèle chargé !");
+    document.getElementById("result").innerText = "Modèle prêt ! Dessine quelque chose...";
+  } catch (error) {
+    console.error("Erreur de chargement du modèle :", error);
+    document.getElementById("result").innerText = "Erreur de chargement du modèle.";
+  }
 }
 
 function setupCanvas() {
