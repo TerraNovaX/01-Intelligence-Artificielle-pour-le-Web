@@ -4,6 +4,9 @@ Description du projet
 
 Ce projet est une page web qui permet à l’utilisateur de dessiner sur un canvas, puis une IA essaye de deviner ce que l’utilisateur a dessiné.
 C’est une petite application interactive qui montre comment on peut intégrer un modèle d’IA dans une page web simple.
+Lien de la vidéo https://youtu.be/qyoAbE3AbXM
+
+
 
 Fonctionnalités
 
